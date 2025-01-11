@@ -11,7 +11,7 @@ namespace Ex03.GarageLogic
         private eCarColors m_carColor;
         private eNumberOfDoors m_numberOfDoors;
 
-        public ElectricCar() : base(5, 34, i_MaxBatteryTime)
+        public ElectricCar() : base(5, 34, 5.4f)
         {
 
         }

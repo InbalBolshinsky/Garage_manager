@@ -10,7 +10,7 @@ namespace Ex03.GarageLogic
     public abstract class Vehicle
     {
         private readonly string m_ModelName;
-        private readonly string m_LicenseNumber;
+        private string m_LicenseNumber;
         private float m_energyPercentageLeft;
         private Wheel[] m_wheels;
 
@@ -37,18 +37,13 @@ namespace Ex03.GarageLogic
 
         public string ModelName
         {
-            get
-            {
-                return m_ModelName;
-            }
+            get { return m_ModelName; }
         }
 
         public string LicenseNumber
         {
-            get
-            {
-                return m_LicenseNumber;
-            }
+            get { return m_LicenseNumber; }
+            set { m_LicenseNumber = value; }
         }
 
         public void SetEnergyPersentageLeft(float i_energyPersentageLeft)

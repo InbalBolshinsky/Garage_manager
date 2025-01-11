@@ -1,5 +1,8 @@
 ﻿using Ex03.GarageLogic;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 
@@ -49,16 +52,16 @@ namespace Ex03.ConsoleUI
                             changeVehicleStateUI();
                             break;
                         case 4:
-                            inflateTiresToMaxUI();
+                            //   inflateTiresToMaxUI();
                             break;
                         case 5:
-                            refuelVehicleUI();
+                            // refuelVehicleUI();
                             break;
                         case 6:
-                            chargeVehicleUI();
+                            //chargeVehicleUI();
                             break;
                         case 7:
-                            printVehicleInfo();
+                            //printVehicleInfo();
                             break;
                         case 8:
                             exitMenu = true;
@@ -107,31 +110,64 @@ namespace Ex03.ConsoleUI
             }
             else
             {
-                string OwnerName;
-                string OwnerPhone;
+                string ownerName;
+                string ownerPhone;
                 string VehicleType;
+
                 Console.WriteLine("Please enter vehicle type:");
                 printEnumValues(typeof(GarageLogic.eVehicleTypes));
                 VehicleType = Console.ReadLine();
                 vehicle = factory.CreateVehicle((GarageLogic.eVehicleTypes)int.Parse(VehicleType));
-                
-                GetVehicleInfo(vehicle, VehicleType);
 
+                Type typeOfVehicle = vehicle.GetType();
+                PropertyInfo[] allProperties = typeOfVehicle.GetProperties();
 
-                garage.AddToGarage((vehicle, licenseNumber));
+                for (int i = 0; i < allProperties.Length; i++)
+                {
+                    PropertyInfo propertyInfo = allProperties[i];
+                    if (propertyInfo.CanWrite)
+                    {
+                        if (propertyInfo.Name == "LicenseNumber")
+                        {
+                            propertyInfo.SetValue(vehicle, licenseNumber, null);
+                        }
+                        else
+                        {
+                            if (propertyInfo.PropertyType.IsEnum)
+                            {
+                                Console.WriteLine(string.Format("Please enter {0}: ", fixPropertyName(propertyInfo.Name)));
+                                printEnumValues(propertyInfo.PropertyType);
+                                int inputEnumVal;
+                                inputEnumVal = int.Parse(Console.ReadLine());
+                                if (!Enum.IsDefined(propertyInfo.PropertyType, inputEnumVal))
+                                {
+                                    throw new GarageLogic.ValueOutOfRangeException(0, Enum.GetValues(propertyInfo.PropertyType).Length - 1);
+                                }
+
+                                propertyInfo.SetValue(vehicle, Enum.ToObject(propertyInfo.PropertyType, inputEnumVal), null);
+                            }
+                            else
+                            {
+                                if (propertyInfo.PropertyType == typeof(bool))
+                                {
+                                    Console.Write(string.Format("Please enter if {0}: \nfor yes enter 'true', for no enter 'false': ", fixPropertyName(propertyInfo.Name)));
+                                }
+                                else
+                                {
+                                    Console.Write(string.Format("Please enter {0}: ", fixPropertyName(propertyInfo.Name)));
+                                }
+
+                                propertyInfo.SetValue(vehicle, Convert.ChangeType(Console.ReadLine(), propertyInfo.PropertyType), null);
+                            }
+                        }
+                    }
+                }
+                Console.Write("Please enter the owner's name: ");
+                ownerName = Console.ReadLine();
+                Console.Write("Please enter the owner's phone number: ");
+                ownerPhone = Console.ReadLine();
+                garage.AddToGarage(new GarageLogic.VehicleOwner(ownerName, ownerPhone), vehicle);
                 Console.WriteLine("Vehicle added successfully.");
-            }
-
-
-        }
-
-        public eVehicleTypes GetVehicleInfo(GarageLogic.Vehicle i_vehicle)
-        {
-            foreach (string property in i_vehicle.GetProperties())
-            {
-                Console.WriteLine(string.Format("Please enter {0}:", fixPropertyName(property)));
-                string value = Console.ReadLine();
-                i_vehicle.SetProperty(property, value);
             }
         }
 
@@ -159,6 +195,76 @@ namespace Ex03.ConsoleUI
             for (int i = 0; i < enumOptions.Length; i++)
             {
                 Console.WriteLine(string.Format("For {0} please enter '{1}'", fixPropertyName(enumOptions[i]), i));
+            }
+        }
+
+        public void getLicenseNumbersUI()
+        {
+            Console.Write("Do you want to select vehicle state to sort?\nPlease enter '1' for yes, '0' for no: ");
+            string answer = Console.ReadLine();
+            while (answer.Length != 1 || (answer[0] != '0' && answer[0] != '1'))
+            {
+                Console.Write("Invalid input, please try again: ");
+                answer = Console.ReadLine();
+            }
+
+            if (answer[0] == '0')
+            {
+                List<string> licenseNumbers = garage.GetLicenseNumbers();
+                if (licenseNumbers.Count == 0)
+                {
+                    Console.WriteLine("There are no vehicles in the garage.");
+                }
+                else
+                {
+                    Console.WriteLine("The license numbers are:");
+                    foreach (string licenseNumber in licenseNumbers)
+                    {
+                        Console.WriteLine(licenseNumber);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("License numbers of which vehicle state do you want to display?");
+                printEnumValues(typeof(GarageLogic.eRepairState));
+                List<string> licenseNumbers = garage.SortVehiclesBySate((GarageLogic.eRepairState)int.Parse(Console.ReadLine()));
+                if (licenseNumbers.Count == 0)
+                {
+                    Console.WriteLine("There are no vehicles in the garage in that state.");
+                }
+                else
+                {
+                    Console.WriteLine("The license numbers are:");
+                    foreach (string licenseNumber in licenseNumbers)
+                    {
+                        Console.WriteLine(licenseNumber);
+                    }
+                }
+            }
+        }
+
+        public void changeVehicleStateUI()
+        {
+            Console.WriteLine("Please enter the vehicle's license number:");
+            string inputLicenseNumber = Console.ReadLine();
+
+            Console.WriteLine("Please enter the new vehicle state:");
+            printEnumValues(typeof(GarageLogic.eRepairState));
+            int newVehicleState = int.Parse(Console.ReadLine());
+
+            if (garage.CheckIfInGarage(inputLicenseNumber, false))
+            {
+                garage.ChangeVehicleState(inputLicenseNumber, (GarageLogic.eRepairState)newVehicleState);
+                if (!Enum.IsDefined(typeof(GarageLogic.eRepairState), newVehicleState))
+                {
+                    throw new GarageLogic.ValueOutOfRangeException(0, Enum.GetValues(typeof(GarageLogic.eRepairState)).Length - 1);
+                }
+                Console.WriteLine("Vehicle's state changed.");
+            }
+            else
+            {
+                Console.WriteLine("There is no vehicle with such license number in the garage.");
             }
         }
     }
