@@ -16,16 +16,16 @@ namespace Ex03.GarageLogic
 
         }
 
-        public eColor Color
+        public eCarColors Color
         {
-            get { return m_color; }
-            set { m_color = value; }
+            get { return m_carColor; }
+            set { m_carColor = value; }
         }
 
         public eNumberOfDoors NumberOfDoors
         {
-            get { return m_numOfDoors; }
-            set { m_numOfDoors = value; }
+            get { return m_numberOfDoors; }
+            set { m_numberOfDoors = value; }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Ex03.GarageLogic
 
         }
 
-        public eColor CarColor
+        public eCarColors CarColor
         {
             get { return m_carColor; }
             set { m_carColor = value; }

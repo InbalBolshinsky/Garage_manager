@@ -10,11 +10,11 @@ namespace Ex03.GarageLogic
     {
         private string m_manufacturer;
         private float m_currentAirPressure;
-        private readonly float m_maxAirPressure;
+        private readonly float r_maxAirPressure;
 
         public Wheel(float i_maxAirPressure)
         {
-            m_maxAirPressure = i_maxAirPressure;
+            r_maxAirPressure = i_maxAirPressure;
         }
 
         public string Manufacturer
@@ -33,7 +33,7 @@ namespace Ex03.GarageLogic
         {
             get
             {
-                return m_maxAirPressure;
+                return r_maxAirPressure;
             }
         }
 
@@ -56,9 +56,9 @@ namespace Ex03.GarageLogic
 
         public void Pump(float i_PreassureToAdd)
         {
-            if (i_PreassureToAdd + m_currentAirPressure > m_maxAirPressure)
+            if (i_PreassureToAdd + m_currentAirPressure > r_maxAirPressure)
             {
-                throw new ValueOutOfRangeException(0, m_maxAirPressure); //Check
+                throw new ValueOutOfRangeException(0, r_maxAirPressure); //Check
             }
             else
             {

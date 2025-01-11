@@ -9,7 +9,7 @@ namespace Ex03.GarageLogic
     internal abstract class ElectricVehicle : Vehicle
     {
         private float m_batteryTimeLeft;
-        private readonly float m_maxBatteryTime;
+        private readonly float r_maxBatteryTime;
 
         public ElectricVehicle(int i_Wheels, float i_maxAirPressure, float i_maxBatteryTime) : base(i_Wheels, i_maxAirPressure)
         {
@@ -24,9 +24,9 @@ namespace Ex03.GarageLogic
             }
             set
             {
-                if (value > m_maxBatteryTime)
+                if (value > r_maxBatteryTime)
                 {
-                    throw new ValueOutOfRangeException(0, m_maxBatteryTime);
+                    throw new ValueOutOfRangeException(0, r_maxBatteryTime);
                 }
                 m_batteryTimeLeft = value;
             }
@@ -38,7 +38,7 @@ namespace Ex03.GarageLogic
         }
 
 
-        public void recharge(float i_AmountOfMinutesToAdd)
+        public void Recharge(float i_AmountOfMinutesToAdd)
         {
             float hoursToAdd = i_AmountOfMinutesToAdd / 60;
             m_batteryTimeLeft += hoursToAdd;

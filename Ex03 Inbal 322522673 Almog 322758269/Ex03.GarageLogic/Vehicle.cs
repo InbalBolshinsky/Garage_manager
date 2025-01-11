@@ -12,7 +12,7 @@ namespace Ex03.GarageLogic
         private readonly string m_ModelName;
         private readonly string m_LicenseNumber;
         private float m_energyPercentageLeft;
-        private Wheel[] m_Wheels;
+        private Wheel[] m_wheels;
 
 
         public Vehicle(int i_NumberOfWheels, float i_maxAirPressure)
@@ -30,9 +30,9 @@ namespace Ex03.GarageLogic
             get { return m_energyPercentageLeft; }
         }
 
-        public Wheels[] Wheels
+        public Wheel[] Wheels
         {
-            get { return r_wheels; }
+            get { return m_wheels; }
         }
 
         public string ModelName
@@ -63,7 +63,7 @@ namespace Ex03.GarageLogic
 
         public void SetTireAirPressure(int i_tireIndex, float i_airPressure)
         {
-            Wheels[i_tireIndex].AirPressure = i_airPressure;
+            Wheels[i_tireIndex].CurrentAirPressure = i_airPressure;
         }
 
         public void SetAllTiresAirPressure(float i_airPressure)

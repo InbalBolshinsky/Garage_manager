@@ -1,6 +1,6 @@
 ﻿using System;
 
-using namespace Ex03.GarageLogic
+namespace Ex03.GarageLogic
 {
     public class VehicleFactory
     {
@@ -28,10 +28,14 @@ using namespace Ex03.GarageLogic
                 case eVehicleTypes.Truck:
                     newVehicle = new Truck();
                     break;
+                //case eVehicleTypes.ElectricTractor:
+                //    newVehicle = new ElectricTractor();
+                //    break;
                 default:
                     throw new ValueOutOfRangeException(0, Enum.GetValues(typeof(eVehicleTypes)).Length - 1);
             }
-        }
+
             return newVehicle;
         }
+    }
 }

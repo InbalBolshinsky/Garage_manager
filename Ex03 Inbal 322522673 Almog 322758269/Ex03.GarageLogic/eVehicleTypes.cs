@@ -8,6 +8,7 @@ namespace Ex03.GarageLogic
         ElectricCar,
         RegularBike,
         ElectricBike,
-        Truck
+        Truck,
+        ElectricTractor
     }
 }

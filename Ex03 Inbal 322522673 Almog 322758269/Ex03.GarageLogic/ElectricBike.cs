@@ -11,7 +11,7 @@ namespace Ex03.GarageLogic
         private eLicenseType m_licenseType;
         private int m_engineVolume;
 
-        public ElectricBike() : base(2, 32, 2.9)
+        public ElectricBike() : base(2, 32, 2.9f)
         {
         }
         public eLicenseType LicenseType
@@ -25,3 +25,4 @@ namespace Ex03.GarageLogic
             set { m_engineVolume = value; }
         }
     }
+}

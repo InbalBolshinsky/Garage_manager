@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Ex03.GarageLogic
 {
-    internal class VehicleOwner
+    public class VehicleOwner
     {
-        private string m_ownerName;
-        private string m_ownerPhone;
+        private readonly string r_ownerName;
+        private readonly string r_ownerPhone;
         private eRepairState m_repairState;
 
         public VehicleOwner(string i_ownerName, string i_ownerPhone)
         {
-            m_ownerName = i_ownerName;
-            m_ownerPhone = i_ownerPhone;
+            r_ownerName = i_ownerName;
+            r_ownerPhone = i_ownerPhone;
         }
 
         public string OwnerName
@@ -23,15 +23,15 @@ namespace Ex03.GarageLogic
             get { return r_ownerName; }
         }
 
-        public string OwnerPhoneNumber
+        public string OwnerPhone
         {
-            get { return r_ownerPhoneNumber; }
+            get { return r_ownerPhone; }
         }
 
-        public eVehicleState VehicleState
+        public eRepairState VehicleState
         {
-            get { return m_vehicleState; }
-            set { m_vehicleState = value; }
+            get { return m_repairState; }
+            set { m_repairState = value; }
         }
     }
 }

@@ -10,12 +10,12 @@ namespace Ex03.GarageLogic
     {
         private eFuelType m_fuelType;
         private float m_currentFuelAmount;
-        private float m_maxFuelAmount;
+        private readonly float r_maxFuelAmount;
 
         public RegularVehicle(int i_NumberOfWheels, float i_maxAirPressure, eFuelType i_FuelType, float i_MaxFuelAmount) : base(i_NumberOfWheels, i_maxAirPressure)
         {
             m_fuelType = i_FuelType;
-            m_maxFuelAmount = i_MaxFuelAmount;
+            r_maxFuelAmount = i_MaxFuelAmount;
         }
 
         public eFuelType FuelType
@@ -23,6 +23,14 @@ namespace Ex03.GarageLogic
             get
             {
                 return m_fuelType;
+            }
+        }
+
+        public float MaxFuelAmout
+        {
+            get
+            {
+                return r_maxFuelAmount;
             }
         }
 
@@ -34,13 +42,28 @@ namespace Ex03.GarageLogic
             }
             set
             {
-                if (value > MaxAirPressure)
+                if (value > MaxFuelAmout)
                 {
-                    throw new ValueOutOfRangeException(0, MaxAirPressure);
+                    throw new ValueOutOfRangeException(0, MaxFuelAmout);
                 }
 
                 m_currentFuelAmount = value;
             }
+        }
+
+        public void Refuel(float i_AmountOfFuelToAdd, eFuelType i_FuelType)
+        {
+            if (i_FuelType != m_fuelType)
+            {
+                throw new ArgumentException("Wrong fuel type");
+            }
+            if (m_currentFuelAmount + i_AmountOfFuelToAdd > r_maxFuelAmount)
+            {
+                throw new ValueOutOfRangeException(0, r_maxFuelAmount);
+            }
+            m_currentFuelAmount += i_AmountOfFuelToAdd;
+
+
         }
     }
 }

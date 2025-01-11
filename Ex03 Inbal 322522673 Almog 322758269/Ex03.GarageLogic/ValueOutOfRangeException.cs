@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Ex03.GarageLogic
 {
-    internal class ValueOutOfRangeException : Exception
+    public class ValueOutOfRangeException : Exception
     {
-        float MinValue;
-        float MaxValue;
+        float m_minValue;
+        float m_maxValue;
 
         public float MaxValue
         {

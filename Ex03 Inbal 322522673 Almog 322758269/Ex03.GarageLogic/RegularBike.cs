@@ -11,7 +11,7 @@ namespace Ex03.GarageLogic
         private eLicenseType m_licenseType;
         private int m_engineVolume;
 
-        public RegularBike() : base(2, 32, eFuelType.Octan98, 6.2)
+        public RegularBike() : base(2, 32, eFuelType.Octan98, 6.2f)
         {
         }
 
