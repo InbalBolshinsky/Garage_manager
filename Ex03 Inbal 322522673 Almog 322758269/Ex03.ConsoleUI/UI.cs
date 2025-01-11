@@ -52,7 +52,7 @@ namespace Ex03.ConsoleUI
                             changeVehicleStateUI();
                             break;
                         case 4:
-                            //   inflateTiresToMaxUI();
+                            pumpWheelsToMaxUI();
                             break;
                         case 5:
                             // refuelVehicleUI();
@@ -162,6 +162,14 @@ namespace Ex03.ConsoleUI
                         }
                     }
                 }
+                Console.Write("Please enter the manufacturer name for all the wheels:");
+                Console.Write("Enter all tires manufacturer name: ");
+                vehicle.SetAllTiresManufacturer(Console.ReadLine());
+
+                Console.Write("Please enter air preassure for all the wheels ");
+                Console.Write("Enter all tires current air pressure: ");
+                vehicle.SetAllTiresAirPressure(float.Parse(Console.ReadLine()));
+
                 Console.Write("Please enter the owner's name: ");
                 ownerName = Console.ReadLine();
                 Console.Write("Please enter the owner's phone number: ");
@@ -266,6 +274,11 @@ namespace Ex03.ConsoleUI
             {
                 Console.WriteLine("There is no vehicle with such license number in the garage.");
             }
+        }
+
+        public void pumpWheelsToMaxUI()
+        {
+
         }
     }
         
