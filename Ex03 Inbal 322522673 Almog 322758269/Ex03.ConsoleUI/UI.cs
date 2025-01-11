@@ -58,10 +58,10 @@ namespace Ex03.ConsoleUI
                             refuelVehicle();
                             break;
                         case 6:
-                            //chargeVehicleUI();
+                            chargeVehicle();
                             break;
                         case 7:
-                            //printVehicleInfo();
+                            printVehicleData();
                             break;
                         case 8:
                             exitMenu = true;
@@ -95,13 +95,17 @@ namespace Ex03.ConsoleUI
                 }
             }
         }
+        public string getVehicleLicenseNumber()
+        {
+            Console.WriteLine("Please enter the vehicle's license number:");
+            string licenseNumber = Console.ReadLine();
+            return licenseNumber;
+        }
 
         public void addVehicle()
         {
             GarageLogic.Vehicle vehicle;
-            string licenseNumber;
-            Console.WriteLine("Please enter vehicle license number:");
-            licenseNumber = Console.ReadLine();
+            string licenseNumber = getVehicleLicenseNumber();  
 
             if (garage.CheckIfInGarage(licenseNumber))
             {
@@ -186,7 +190,7 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine("Vehicle added successfully.");
             }
         }
-       
+
         private StringBuilder fixPropertyName(string i_propertyName)
         {
             StringBuilder fixedName = new StringBuilder();
@@ -262,16 +266,15 @@ namespace Ex03.ConsoleUI
 
         public void changeVehicleState()
         {
-            Console.WriteLine("Please enter the vehicle's license number:");
-            string inputLicenseNumber = Console.ReadLine();
+            string licenseNumber = getVehicleLicenseNumber();
 
             Console.WriteLine("Please enter the new vehicle state:");
             printEnumValues(typeof(GarageLogic.eRepairState));
             int newVehicleState = int.Parse(Console.ReadLine());
 
-            if (garage.CheckIfInGarage(inputLicenseNumber, false))
+            if (garage.CheckIfInGarage(licenseNumber, false))
             {
-                garage.ChangeVehicleState(inputLicenseNumber, (GarageLogic.eRepairState)newVehicleState);
+                garage.ChangeVehicleState(licenseNumber, (GarageLogic.eRepairState)newVehicleState);
                 if (!Enum.IsDefined(typeof(GarageLogic.eRepairState), newVehicleState))
                 {
                     throw new GarageLogic.ValueOutOfRangeException(0, Enum.GetValues(typeof(GarageLogic.eRepairState)).Length - 1);
@@ -286,9 +289,7 @@ namespace Ex03.ConsoleUI
 
         public void pumpAllWheelsToMax()
         {
-            string licenseNumber;
-            Console.WriteLine("Please enter the vehicle's license number:");
-            licenseNumber = Console.ReadLine();
+            string licenseNumber = getVehicleLicenseNumber();   
             if (garage.CheckIfInGarage(licenseNumber, false))
             {
                 garage.PumpWheelsToMax(licenseNumber);
@@ -301,17 +302,17 @@ namespace Ex03.ConsoleUI
         }
         public void refuelVehicle()
         {
-            Console.WriteLine("Please enter license number:");
-            string inputLicenseNumber = Console.ReadLine();
+           string licenseNumber = getVehicleLicenseNumber();
 
             Console.WriteLine("Please enter fuel type:");
             printEnumValues(typeof(GarageLogic.eFuelType));
             int inputFuelType = int.Parse(Console.ReadLine());
+
             Console.WriteLine("Please enter the amount of liters to fuel:");
             float inputAmountOfLitersToAdd = float.Parse(Console.ReadLine());
-            if (garage.CheckIfInGarage(inputLicenseNumber, false))
+            if (garage.CheckIfInGarage(licenseNumber, false))
             {
-                garage.RefuelVehicle(inputLicenseNumber, (GarageLogic.eFuelType)inputFuelType, inputAmountOfLitersToAdd);
+                garage.RefuelVehicle(licenseNumber, (GarageLogic.eFuelType)inputFuelType, inputAmountOfLitersToAdd);
                 Console.WriteLine("Vehicle refuled.");
             }
             else
@@ -319,8 +320,62 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number");
             }
         }
-    }
-        
+
+        public void chargeVehicle()
+        {
+            string licenseNumber = getVehicleLicenseNumber();
+            Console.WriteLine("Please enter the amount of minutes to charge:");
+            float inputAmountOfMinutesToCharge = float.Parse(Console.ReadLine());
+
+            if (garage.CheckIfInGarage(licenseNumber, false))
+            {
+                garage.ChargeVehicle(licenseNumber, inputAmountOfMinutesToCharge);
+                Console.WriteLine("Vehicle charged.");
+            }
+            else
+            {
+                Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number");
+            }
+        }
+
+        public void printVehicleData()
+        {
+            string licenseNumber = getVehicleLicenseNumber();
+            int wheelIndex = 1;
+            KeyValuePair<GarageLogic.VehicleOwner, GarageLogic.Vehicle> vehicleData = garage.GetVehicleDetailsByLicenseNumber(licenseNumber);
+            if (garage.CheckIfInGarage(licenseNumber, false))
+            {
+                Console.WriteLine("Vehicle data:");
+                Console.WriteLine(string.Format("Owner name: {0}", vehicleData.Key.OwnerName));
+                Console.WriteLine(string.Format("Vehicle state: {0}", vehicleData.Key.RepairState));
+                Console.WriteLine("Wheels data:");
+
+                foreach (Wheel wheel in vehicleData.Value.Wheels)
+                {
+                    Console.WriteLine("Wheel number: {0}", wheelIndex);
+                    Console.WriteLine("Wheel manufacturer: {0}", wheel.Manufacturer);
+                    Console.WriteLine("Wheel current air pressure: {0}", wheel.CurrentAirPressure);
+                    wheelIndex++;
+                }
+
+                Type typeOfVehicle = vehicleData.Value.GetType();
+                PropertyInfo[] allProperties = typeOfVehicle.GetProperties();
+                MethodInfo[] allMethods = typeOfVehicle.GetMethods();
+
+                foreach (PropertyInfo propertyInfo in allProperties)
+                {
+                    if (propertyInfo.Name != "Wheels")
+                    {
+                        Console.WriteLine(string.Format("Vehicle's {0}: {1}", fixPropertyName(propertyInfo.Name), propertyInfo.GetValue(vehicleData.Value, null)));
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number");
+            }
+        }
+    }   
 }
 
 

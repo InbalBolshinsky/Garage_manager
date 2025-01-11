@@ -28,7 +28,7 @@ namespace Ex03.GarageLogic
             get { return r_ownerPhone; }
         }
 
-        public eRepairState VehicleState
+        public eRepairState RepairState
         {
             get { return m_repairState; }
             set { m_repairState = value; }
