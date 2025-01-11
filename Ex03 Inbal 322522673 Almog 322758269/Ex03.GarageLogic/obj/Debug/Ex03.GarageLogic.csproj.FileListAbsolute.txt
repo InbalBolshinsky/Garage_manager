@@ -1,0 +1,3 @@
+C:\Users\Almog Sasson\Documents\Visual Studio 2022\Projects\Ex03 Inbal 322522673 Almog 322758269\Ex03.GarageLogic\obj\Debug\Ex03.GarageLogic.csproj.AssemblyReference.cache
+C:\Users\Almog Sasson\Documents\Visual Studio 2022\Projects\Ex03 Inbal 322522673 Almog 322758269\Ex03.GarageLogic\obj\Debug\Ex03.GarageLogic.csproj.SuggestedBindingRedirects.cache
+C:\Users\Almog Sasson\Documents\Visual Studio 2022\Projects\Ex03 Inbal 322522673 Almog 322758269\Ex03.GarageLogic\obj\Debug\Ex03.GarageLogic.csproj.CoreCompileInputs.cache
