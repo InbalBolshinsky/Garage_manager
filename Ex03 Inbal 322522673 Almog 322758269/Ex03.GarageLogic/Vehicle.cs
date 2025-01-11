@@ -51,29 +51,19 @@ namespace Ex03.GarageLogic
             m_energyPercentageLeft = i_energyPersentageLeft;
         }
 
-        public void SetTireManufacturer(int i_tireIndex, string i_manufacturer)
-        {
-            Wheels[i_tireIndex].Manufacturer = i_manufacturer;
-        }
-
-        public void SetTireAirPressure(int i_tireIndex, float i_airPressure)
-        {
-            Wheels[i_tireIndex].CurrentAirPressure = i_airPressure;
-        }
-
-        public void SetAllTiresAirPressure(float i_airPressure)
+        public void SetAllWheelsAirPressure(float i_airPressure)
         {
             for (int i = 0; i < Wheels.Length; i++)
             {
-                SetTireAirPressure(i, i_airPressure);
+                Wheels[i].CurrentAirPressure = i_airPressure;
             }
         }
 
-        public void SetAllTiresManufacturer(string i_manufacturer) 
+        public void SetAllWheelsManufacturer(string i_manufacturer) 
         {
             for (int i = 0; i < this.Wheels.Length; i++)
             {
-                SetTireManufacturer(i, i_manufacturer);
+                Wheels[i].Manufacturer = i_manufacturer;
             }
         }
 

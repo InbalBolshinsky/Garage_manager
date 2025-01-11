@@ -43,19 +43,19 @@ namespace Ex03.ConsoleUI
                     switch (input)
                     {
                         case 1:
-                            addVehicleUI();
+                            addVehicle();
                             break;
                         case 2:
-                            getLicenseNumbersUI();
+                            getLicenseNumbers();
                             break;
                         case 3:
-                            changeVehicleStateUI();
+                            changeVehicleState();
                             break;
                         case 4:
-                            pumpWheelsToMaxUI();
+                            pumpAllWheelsToMax();
                             break;
                         case 5:
-                            // refuelVehicleUI();
+                            refuelVehicle();
                             break;
                         case 6:
                             //chargeVehicleUI();
@@ -87,7 +87,7 @@ namespace Ex03.ConsoleUI
 
                 if (exitMenu)
                 {
-                    Console.WriteLine("Press enter to exit...");
+                    Console.WriteLine("Press enter to exit the menu.");
                 }
                 else
                 {
@@ -96,11 +96,11 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        public void addVehicleUI()
+        public void addVehicle()
         {
             GarageLogic.Vehicle vehicle;
             string licenseNumber;
-            Console.WriteLine("Please enter the vehicle license number:");
+            Console.WriteLine("Please enter vehicle license number:");
             licenseNumber = Console.ReadLine();
 
             if (garage.CheckIfInGarage(licenseNumber))
@@ -112,12 +112,12 @@ namespace Ex03.ConsoleUI
             {
                 string ownerName;
                 string ownerPhone;
-                string VehicleType;
+                string vehicleType;
 
                 Console.WriteLine("Please enter vehicle type:");
                 printEnumValues(typeof(GarageLogic.eVehicleTypes));
-                VehicleType = Console.ReadLine();
-                vehicle = factory.CreateVehicle((GarageLogic.eVehicleTypes)int.Parse(VehicleType));
+                vehicleType = Console.ReadLine();
+                vehicle = factory.CreateVehicle((GarageLogic.eVehicleTypes)int.Parse(vehicleType));
 
                 Type typeOfVehicle = vehicle.GetType();
                 PropertyInfo[] allProperties = typeOfVehicle.GetProperties();
@@ -163,22 +163,30 @@ namespace Ex03.ConsoleUI
                     }
                 }
                 Console.Write("Please enter the manufacturer name for all the wheels:");
-                Console.Write("Enter all tires manufacturer name: ");
-                vehicle.SetAllTiresManufacturer(Console.ReadLine());
+                Console.Write("Enter all of the wheels manufacturer name:");
+                vehicle.SetAllWheelsManufacturer(Console.ReadLine());
 
-                Console.Write("Please enter air preassure for all the wheels ");
-                Console.Write("Enter all tires current air pressure: ");
-                vehicle.SetAllTiresAirPressure(float.Parse(Console.ReadLine()));
+                Console.Write("Please enter air preassure for all the wheels:");
+                Console.Write("Enter all of the wheels current air pressure:");
+                try
+                {
+                    float airPressure = float.Parse(Console.ReadLine());
+                    vehicle.SetAllWheelsAirPressure(airPressure);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Input was not a valid number. Please try again.");
+                }
 
-                Console.Write("Please enter the owner's name: ");
+                Console.Write("Please enter owner's name:");
                 ownerName = Console.ReadLine();
-                Console.Write("Please enter the owner's phone number: ");
+                Console.Write("Please enter owner's phone number:");
                 ownerPhone = Console.ReadLine();
                 garage.AddToGarage(new GarageLogic.VehicleOwner(ownerName, ownerPhone), vehicle);
                 Console.WriteLine("Vehicle added successfully.");
             }
         }
-
+       
         private StringBuilder fixPropertyName(string i_propertyName)
         {
             StringBuilder fixedName = new StringBuilder();
@@ -206,13 +214,13 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        public void getLicenseNumbersUI()
+        public void getLicenseNumbers()
         {
-            Console.Write("Do you want to select vehicle state to sort?\nPlease enter '1' for yes, '0' for no: ");
+            Console.Write("Do you want to select vehicle state to filter your search by?\nPlease enter '1' if yes, '0' if no: ");
             string answer = Console.ReadLine();
             while (answer.Length != 1 || (answer[0] != '0' && answer[0] != '1'))
             {
-                Console.Write("Invalid input, please try again: ");
+                Console.Write("Invalid input, please try again:");
                 answer = Console.ReadLine();
             }
 
@@ -234,7 +242,7 @@ namespace Ex03.ConsoleUI
             }
             else
             {
-                Console.WriteLine("License numbers of which vehicle state do you want to display?");
+                Console.WriteLine("Which vehicle state license numbers do you want to display?");
                 printEnumValues(typeof(GarageLogic.eRepairState));
                 List<string> licenseNumbers = garage.SortVehiclesBySate((GarageLogic.eRepairState)int.Parse(Console.ReadLine()));
                 if (licenseNumbers.Count == 0)
@@ -252,7 +260,7 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        public void changeVehicleStateUI()
+        public void changeVehicleState()
         {
             Console.WriteLine("Please enter the vehicle's license number:");
             string inputLicenseNumber = Console.ReadLine();
@@ -276,9 +284,40 @@ namespace Ex03.ConsoleUI
             }
         }
 
-        public void pumpWheelsToMaxUI()
+        public void pumpAllWheelsToMax()
         {
+            string licenseNumber;
+            Console.WriteLine("Please enter the vehicle's license number:");
+            licenseNumber = Console.ReadLine();
+            if (garage.CheckIfInGarage(licenseNumber, false))
+            {
+                garage.PumpWheelsToMax(licenseNumber);
+                Console.WriteLine("Wheels inflated to maximum.");
+            }
+            else
+            {
+                Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number");
+            }
+        }
+        public void refuelVehicle()
+        {
+            Console.WriteLine("Please enter license number:");
+            string inputLicenseNumber = Console.ReadLine();
 
+            Console.WriteLine("Please enter fuel type:");
+            printEnumValues(typeof(GarageLogic.eFuelType));
+            int inputFuelType = int.Parse(Console.ReadLine());
+            Console.WriteLine("Please enter the amount of liters to fuel:");
+            float inputAmountOfLitersToAdd = float.Parse(Console.ReadLine());
+            if (garage.CheckIfInGarage(inputLicenseNumber, false))
+            {
+                garage.RefuelVehicle(inputLicenseNumber, (GarageLogic.eFuelType)inputFuelType, inputAmountOfLitersToAdd);
+                Console.WriteLine("Vehicle refuled.");
+            }
+            else
+            {
+                Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number");
+            }
         }
     }
         

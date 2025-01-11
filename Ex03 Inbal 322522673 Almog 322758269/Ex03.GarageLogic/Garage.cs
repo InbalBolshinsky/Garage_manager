@@ -76,7 +76,7 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void InflateTiresToMax(string i_licenseNumber)
+        public void PumpWheelsToMax(string i_licenseNumber)
         {
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
