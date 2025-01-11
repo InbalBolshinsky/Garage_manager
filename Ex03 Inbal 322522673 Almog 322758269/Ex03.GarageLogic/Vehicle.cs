@@ -69,7 +69,7 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void SetAllTiresManufacturer(string i_manufacturer)
+        public void SetAllTiresManufacturer(string i_manufacturer) 
         {
             for (int i = 0; i < this.Wheels.Length; i++)
             {
