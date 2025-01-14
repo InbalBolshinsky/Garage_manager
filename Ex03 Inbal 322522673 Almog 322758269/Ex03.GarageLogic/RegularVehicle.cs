@@ -8,7 +8,7 @@ namespace Ex03.GarageLogic
 {
     internal abstract class RegularVehicle : Vehicle
     {
-        private eFuelType m_fuelType;
+        private readonly eFuelType m_fuelType;
         private float m_currentFuelAmount;
         private readonly float r_maxFuelAmount;
 

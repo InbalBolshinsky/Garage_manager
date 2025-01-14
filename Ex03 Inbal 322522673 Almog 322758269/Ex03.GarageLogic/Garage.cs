@@ -22,7 +22,7 @@ namespace Ex03.GarageLogic
                     {
                         if (changeRepairState == true)
                         {
-                            pair.Key.VehicleState = eRepairState.InRepair;
+                            pair.Key.RepairState = eRepairState.InRepair;
                         }
 
                         inGarage = true;
@@ -50,12 +50,12 @@ namespace Ex03.GarageLogic
             return licenseNumbers;
         }
 
-        public List<string> SortVehiclesBySate(eRepairState i_VehicleState)
+        public List<string> SortVehiclesByState(eRepairState i_VehicleState)
         {
             List<string> sortedVehicles = new List<string>();
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
-                if (pair.Key.VehicleState == i_VehicleState)
+                if (pair.Key.RepairState == i_VehicleState)
                 {
                     sortedVehicles.Add(pair.Value.LicenseNumber);
                 }
@@ -70,7 +70,7 @@ namespace Ex03.GarageLogic
             {
                 if (pair.Value.LicenseNumber == i_licenseNumber)
                 {
-                    pair.Key.VehicleState = i_vehicleState;
+                    pair.Key.RepairState = i_vehicleState;
                     break;
                 }
             }

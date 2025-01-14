@@ -58,8 +58,7 @@ namespace Ex03.GarageLogic
         {
             if (i_PreassureToAdd + m_currentAirPressure > r_maxAirPressure)
             {
-                throw new ValueOutOfRangeException(0, r_maxAirPressure); //Check
-            }
+                throw new ValueOutOfRangeException(0, r_maxAirPressure); 
             else
             {
                 m_currentAirPressure += i_PreassureToAdd;

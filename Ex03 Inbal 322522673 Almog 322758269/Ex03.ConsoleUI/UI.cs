@@ -248,7 +248,7 @@ namespace Ex03.ConsoleUI
             {
                 Console.WriteLine("Which vehicle state license numbers do you want to display?");
                 printEnumValues(typeof(GarageLogic.eRepairState));
-                List<string> licenseNumbers = garage.SortVehiclesBySate((GarageLogic.eRepairState)int.Parse(Console.ReadLine()));
+                List<string> licenseNumbers = garage.SortVehiclesByState((GarageLogic.eRepairState)int.Parse(Console.ReadLine()));
                 if (licenseNumbers.Count == 0)
                 {
                     Console.WriteLine("There are no vehicles in the garage in that state.");
