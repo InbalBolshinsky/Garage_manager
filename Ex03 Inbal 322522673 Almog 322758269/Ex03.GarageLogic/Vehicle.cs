@@ -9,18 +9,18 @@ namespace Ex03.GarageLogic
 {
     public abstract class Vehicle
     {
-        private readonly string r_modelName;
+        private string m_modelName;
         private string m_licenseNumber;
         private float m_remainingEnergy;
-        private Wheel[] m_wheels;
+        private readonly Wheel[] r_wheels;
 
 
         public Vehicle(int i_NumberOfWheels, float i_maxAirPressure)
         {
-            Wheel[] m_Wheels = new Wheel[i_NumberOfWheels];
+            r_wheels = new Wheel[i_NumberOfWheels];
             for (int i = 0; i < i_NumberOfWheels; i++)
             {
-                m_Wheels[i] = new Wheel(i_maxAirPressure);
+                r_wheels[i] = new Wheel(i_maxAirPressure);
             }
 
         }
@@ -32,12 +32,13 @@ namespace Ex03.GarageLogic
 
         public Wheel[] Wheels
         {
-            get { return m_wheels; }
+            get { return r_wheels; }
         }
 
         public string ModelName
         {
-            get { return r_modelName; }
+            get { return m_modelName; }
+            set { m_modelName = value; }
         }
 
         public string LicenseNumber

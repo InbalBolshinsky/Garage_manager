@@ -42,12 +42,21 @@ namespace Ex03.GarageLogic
             }
             set
             {
-                if (value > MaxFuelAmout)
+                try
                 {
-                    throw new ValueOutOfRangeException(0, MaxFuelAmout);
+                    if (value > MaxFuelAmout)
+                    {
+                        throw new ValueOutOfRangeException(0, MaxFuelAmout);
+                    }
+                    else
+                    {
+                        m_currentFuelAmount = value;
+                    }
                 }
-
-                m_currentFuelAmount = value;
+                catch (ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 

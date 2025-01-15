@@ -24,11 +24,21 @@ namespace Ex03.GarageLogic
             }
             set
             {
-                if (value > r_maxBatteryTime)
+                try
                 {
-                    throw new ValueOutOfRangeException(0, r_maxBatteryTime);
+                    if (value > r_maxBatteryTime)
+                    {
+                        throw new ValueOutOfRangeException(0, r_maxBatteryTime);
+                    }
+                    else
+                    {
+                        m_batteryTimeLeft = value;
+                    }
                 }
-                m_batteryTimeLeft = value;
+                catch (ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
