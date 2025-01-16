@@ -51,8 +51,12 @@ namespace Ex03.GarageLogic
         public void Recharge(float i_AmountOfMinutesToAdd)
         {
             float hoursToAdd = i_AmountOfMinutesToAdd / 60;
-            m_batteryTimeLeft += hoursToAdd;
 
+            if (m_batteryTimeLeft + i_AmountOfMinutesToAdd > r_maxBatteryTime)
+            {
+                throw new ValueOutOfRangeException(0, r_maxBatteryTime);
+            }
+            m_batteryTimeLeft += hoursToAdd;
         }
     }
 }

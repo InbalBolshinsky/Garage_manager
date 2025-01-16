@@ -64,15 +64,13 @@ namespace Ex03.GarageLogic
         {
             if (i_FuelType != m_fuelType)
             {
-                throw new ArgumentException("Wrong fuel type");
+                throw new ArgumentException("Wrong fuel type. Please try again.");
             }
             if (m_currentFuelAmount + i_AmountOfFuelToAdd > r_maxFuelAmount)
             {
                 throw new ValueOutOfRangeException(0, r_maxFuelAmount);
             }
             m_currentFuelAmount += i_AmountOfFuelToAdd;
-
-
         }
     }
 }
