@@ -8,21 +8,21 @@ namespace Ex03.GarageLogic
 {
     internal abstract class RegularVehicle : Vehicle
     {
-        private readonly eFuelType m_fuelType;
-        private float m_currentFuelAmount;
-        private readonly float r_maxFuelAmount;
+        private readonly eFuelType r_FuelType;
+        private float m_CurrentFuelAmount;
+        private readonly float r_MaxFuelAmount;
 
-        public RegularVehicle(int i_NumberOfWheels, float i_maxAirPressure, eFuelType i_FuelType, float i_MaxFuelAmount) : base(i_NumberOfWheels, i_maxAirPressure)
+        public RegularVehicle(int i_NumberOfWheels, float i_MaxAirPressure, eFuelType i_FuelType, float i_MaxFuelAmount) : base(i_NumberOfWheels, i_MaxAirPressure)
         {
-            m_fuelType = i_FuelType;
-            r_maxFuelAmount = i_MaxFuelAmount;
+            r_FuelType = i_FuelType;
+            r_MaxFuelAmount = i_MaxFuelAmount;
         }
 
         public eFuelType FuelType
         {
             get
             {
-                return m_fuelType;
+                return r_FuelType;
             }
         }
 
@@ -30,7 +30,7 @@ namespace Ex03.GarageLogic
         {
             get
             {
-                return r_maxFuelAmount;
+                return r_MaxFuelAmount;
             }
         }
 
@@ -38,7 +38,7 @@ namespace Ex03.GarageLogic
         {
             get
             {
-                return m_currentFuelAmount;
+                return m_CurrentFuelAmount;
             }
             set
             {
@@ -50,7 +50,7 @@ namespace Ex03.GarageLogic
                     }
                     else
                     {
-                        m_currentFuelAmount = value;
+                        m_CurrentFuelAmount = value;
                     }
                 }
                 catch (ValueOutOfRangeException ex)
@@ -62,15 +62,15 @@ namespace Ex03.GarageLogic
 
         public void Refuel(float i_AmountOfFuelToAdd, eFuelType i_FuelType)
         {
-            if (i_FuelType != m_fuelType)
+            if (i_FuelType != r_FuelType)
             {
                 throw new ArgumentException("Wrong fuel type. Please try again.");
             }
-            if (m_currentFuelAmount + i_AmountOfFuelToAdd > r_maxFuelAmount)
+            if (m_CurrentFuelAmount + i_AmountOfFuelToAdd > r_MaxFuelAmount)
             {
-                throw new ValueOutOfRangeException(0, r_maxFuelAmount);
+                throw new ValueOutOfRangeException(0, r_MaxFuelAmount);
             }
-            m_currentFuelAmount += i_AmountOfFuelToAdd;
+            m_CurrentFuelAmount += i_AmountOfFuelToAdd;
         }
     }
 }

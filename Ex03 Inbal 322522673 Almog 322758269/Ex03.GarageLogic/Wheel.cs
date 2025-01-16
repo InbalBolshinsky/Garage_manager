@@ -8,24 +8,24 @@ namespace Ex03.GarageLogic
 {
     public class Wheel
     {
-        private string m_manufacturer;
-        private float m_currentAirPressure;
-        private readonly float r_maxAirPressure;
+        private string m_Manufacturer;
+        private float m_CurrentAirPressure;
+        private readonly float r_MaxAirPressure;
 
-        public Wheel(float i_maxAirPressure)
+        public Wheel(float i_MaxAirPressure)
         {
-            r_maxAirPressure = i_maxAirPressure;
+            r_MaxAirPressure = i_MaxAirPressure;
         }
 
         public string Manufacturer
         {
             get
             {
-                return m_manufacturer;
+                return m_Manufacturer;
             }
             set
             {
-                m_manufacturer = value;
+                m_Manufacturer = value;
             }
         }
 
@@ -33,7 +33,7 @@ namespace Ex03.GarageLogic
         {
             get
             {
-                return r_maxAirPressure;
+                return r_MaxAirPressure;
             }
         }
 
@@ -41,7 +41,7 @@ namespace Ex03.GarageLogic
         {
             get
             {
-                return m_currentAirPressure;
+                return m_CurrentAirPressure;
             }
             set
             {
@@ -50,19 +50,19 @@ namespace Ex03.GarageLogic
                     throw new ValueOutOfRangeException(0, MaxAirPressure);
                 }
 
-                m_currentAirPressure = value;
+                m_CurrentAirPressure = value;
             }
         }
 
         public void Pump(float i_PreassureToAdd)
         {
-            if (i_PreassureToAdd + m_currentAirPressure > r_maxAirPressure)
+            if (i_PreassureToAdd + m_CurrentAirPressure > r_MaxAirPressure)
             {
-                throw new ValueOutOfRangeException(0, r_maxAirPressure);
+                throw new ValueOutOfRangeException(0, r_MaxAirPressure);
             }
             else
             {
-                m_currentAirPressure += i_PreassureToAdd;
+                m_CurrentAirPressure += i_PreassureToAdd;
             }
         }
 

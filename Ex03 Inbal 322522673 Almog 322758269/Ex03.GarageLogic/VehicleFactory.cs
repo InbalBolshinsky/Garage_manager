@@ -31,7 +31,6 @@ namespace Ex03.GarageLogic
                 default:
                     throw new ValueOutOfRangeException(0, Enum.GetValues(typeof(eVehicleTypes)).Length - 1);
             }
-
             return newVehicle;
         }
     }

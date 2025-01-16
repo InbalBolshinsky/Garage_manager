@@ -11,16 +11,16 @@ namespace Ex03.GarageLogic
         private VehicleFactory m_vehicleFactory = new VehicleFactory();
         private Dictionary<VehicleOwner, Vehicle> m_allVehiclesInGarage = new Dictionary<VehicleOwner, Vehicle>();
 
-        public bool CheckIfInGarage(string i_licenseNumber, bool changeRepairState = true)
+        public bool CheckIfInGarage(string i_LicenseNumber, bool ChangeRepairState = true)
         {
             bool inGarage = false;
             if (m_allVehiclesInGarage != null)
             {
                 foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
                 {
-                    if (pair.Value.LicenseNumber == i_licenseNumber)
+                    if (pair.Value.LicenseNumber == i_LicenseNumber)
                     {
-                        if (changeRepairState == true)
+                        if (ChangeRepairState == true)
                         {
                             pair.Key.RepairState = eRepairState.InRepair;
                         }
@@ -30,16 +30,12 @@ namespace Ex03.GarageLogic
                     }
                 }
             }
-
             return inGarage;
         }
 
-      
-        
-        
-        public void AddToGarage(VehicleOwner i_vehicleOwner, Vehicle i_vehicle)
+        public void AddToGarage(VehicleOwner i_VehicleOwner, Vehicle i_Vehicle)
         {
-            m_allVehiclesInGarage.Add(i_vehicleOwner, i_vehicle);
+            m_allVehiclesInGarage.Add(i_VehicleOwner, i_Vehicle);
         }
 
         public List<string> GetLicenseNumbers()
@@ -49,7 +45,6 @@ namespace Ex03.GarageLogic
             {
                 licenseNumbers.Add(pair.Value.LicenseNumber);
             }
-
             return licenseNumbers;
         }
 
@@ -63,27 +58,26 @@ namespace Ex03.GarageLogic
                     sortedVehicles.Add(pair.Value.LicenseNumber);
                 }
             }
-
             return sortedVehicles;
         }
 
-        public void ChangeVehicleState(string i_licenseNumber, eRepairState i_vehicleState)
+        public void ChangeVehicleState(string i_LicenseNumber, eRepairState i_VehicleState)
         {
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
-                if (pair.Value.LicenseNumber == i_licenseNumber)
+                if (pair.Value.LicenseNumber == i_LicenseNumber)
                 {
-                    pair.Key.RepairState = i_vehicleState;
+                    pair.Key.RepairState = i_VehicleState;
                     break;
                 }
             }
         }
 
-        public void PumpWheelsToMax(string i_licenseNumber)
+        public void PumpWheelsToMax(string i_LicenseNumber)
         {
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
-                if (pair.Value.LicenseNumber == i_licenseNumber)
+                if (pair.Value.LicenseNumber == i_LicenseNumber)
                 {
                     foreach (Wheel vehicleTire in pair.Value.Wheels)
                     {
@@ -95,15 +89,15 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void RefuelVehicle(string i_licenseNumber, eFuelType i_fuelType, float i_amountOfLitersToAdd)
+        public void RefuelVehicle(string i_LicenseNumber, eFuelType i_FuelType, float i_AmountOfLitersToAdd)
         {
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
-                if (pair.Value.LicenseNumber == i_licenseNumber)
+                if (pair.Value.LicenseNumber == i_LicenseNumber)
                 {
                     if (pair.Value is RegularVehicle)
                     {
-                        (pair.Value as RegularVehicle).Refuel(i_amountOfLitersToAdd, i_fuelType);
+                        (pair.Value as RegularVehicle).Refuel(i_AmountOfLitersToAdd, i_FuelType);
                         break;
                     }
                     else
@@ -114,15 +108,15 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void ChargeVehicle(string i_licenseNumber, float i_amountOfMinutesToAdd)
+        public void ChargeVehicle(string i_LicenseNumber, float i_AmountOfMinutesToAdd)
         {
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
-                if (pair.Value.LicenseNumber == i_licenseNumber)
+                if (pair.Value.LicenseNumber == i_LicenseNumber)
                 {
                     if (pair.Value is ElectricVehicle)
                     {
-                        (pair.Value as ElectricVehicle).Recharge(i_amountOfMinutesToAdd / 60);
+                        (pair.Value as ElectricVehicle).Recharge(i_AmountOfMinutesToAdd / 60);
                         break;
                     }
                     else
@@ -133,17 +127,16 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public KeyValuePair<VehicleOwner, Vehicle> GetVehicleDetailsByLicenseNumber(string i_licenseNumber)
+        public KeyValuePair<VehicleOwner, Vehicle> GetVehicleDetailsByLicenseNumber(string i_LicenseNumber)
         {
             KeyValuePair<VehicleOwner, Vehicle> vehicleDetailsPair = new KeyValuePair<VehicleOwner, Vehicle>();
             foreach (KeyValuePair<VehicleOwner, Vehicle> pair in m_allVehiclesInGarage)
             {
-                if (pair.Value.LicenseNumber == i_licenseNumber)
+                if (pair.Value.LicenseNumber == i_LicenseNumber)
                 {
                     vehicleDetailsPair = pair;
                 }
             }
-
             return vehicleDetailsPair;
         }
     }
