@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
     internal class RegularCar : RegularVehicle
     {
@@ -13,7 +7,6 @@ namespace Ex03.GarageLogic
 
         public RegularCar() : base(5, 34, eFuelType.Octan95, 52)
         {
-
         }
 
         public eCarColors Color

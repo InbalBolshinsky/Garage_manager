@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
     public class Wheel
     {
@@ -19,37 +13,24 @@ namespace Ex03.GarageLogic
 
         public string Manufacturer
         {
-            get
-            {
-                return m_Manufacturer;
-            }
-            set
-            {
-                m_Manufacturer = value;
-            }
+            get { return m_Manufacturer; }
+            set {  m_Manufacturer = value; }
         }
 
         public float MaxAirPressure
         {
-            get
-            {
-                return r_MaxAirPressure;
-            }
+            get { return r_MaxAirPressure; }
         }
 
         public float CurrentAirPressure
         {
-            get
-            {
-                return m_CurrentAirPressure;
-            }
+            get { return m_CurrentAirPressure; }
             set
             {
                 if (value > MaxAirPressure)
                 {
                     throw new ValueOutOfRangeException(0, MaxAirPressure);
                 }
-
                 m_CurrentAirPressure = value;
             }
         }
@@ -65,6 +46,5 @@ namespace Ex03.GarageLogic
                 m_CurrentAirPressure += i_PreassureToAdd;
             }
         }
-
     }
 }

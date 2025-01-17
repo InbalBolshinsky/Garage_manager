@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Ex03.GarageLogic
 {
     internal abstract class RegularVehicle : Vehicle
@@ -20,28 +15,18 @@ namespace Ex03.GarageLogic
 
         public eFuelType FuelType
         {
-            get
-            {
-                return r_FuelType;
-            }
+            get { return r_FuelType; }
         }
 
         public float MaxFuelAmout
         {
-            get
-            {
-                return r_MaxFuelAmount;
-            }
+            get { return r_MaxFuelAmount; }
         }
 
         public float CurrentFuelAmount
         {
-            get
-            {
-                return m_CurrentFuelAmount;
-            }
-            set
-            {
+            get { return m_CurrentFuelAmount; }
+            set {
                 try
                 {
                     if (value > MaxFuelAmout)

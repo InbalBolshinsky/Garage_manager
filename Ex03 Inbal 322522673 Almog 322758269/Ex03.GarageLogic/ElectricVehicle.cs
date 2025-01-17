@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Ex03.GarageLogic
 {
     internal abstract class ElectricVehicle : Vehicle
@@ -18,12 +13,8 @@ namespace Ex03.GarageLogic
 
         public float BatteryTimeLeft
         {
-            get
-            {
-                return m_BatteryTimeLeft;
-            }
-            set
-            {
+            get { return m_BatteryTimeLeft; }
+            set {
                 try
                 {
                     if (value > r_MaxBatteryTime)
@@ -47,11 +38,9 @@ namespace Ex03.GarageLogic
             get { return r_MaxBatteryTime; }
         }
 
-
         public void Recharge(float i_AmountOfMinutesToAdd)
         {
             float hoursToAdd = i_AmountOfMinutesToAdd / 60;
-
             if (m_BatteryTimeLeft + i_AmountOfMinutesToAdd > r_MaxBatteryTime)
             {
                 throw new ValueOutOfRangeException(0, r_MaxBatteryTime);

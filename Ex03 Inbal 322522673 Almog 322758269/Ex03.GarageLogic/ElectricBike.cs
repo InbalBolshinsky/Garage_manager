@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
     internal class ElectricBike : ElectricVehicle
     {
@@ -14,11 +8,13 @@ namespace Ex03.GarageLogic
         public ElectricBike() : base(2, 32, 2.9f)
         {
         }
+
         public eLicenseType LicenseType
         {
             get { return m_LicenseType; }
             set { m_LicenseType = value; }
         }
+
         public int EngineVolume
         {
             get { return m_EngineVolume; }

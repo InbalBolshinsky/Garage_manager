@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace Ex03.GarageLogic
 {
     public class VehicleFactory
@@ -7,7 +6,6 @@ namespace Ex03.GarageLogic
         public VehicleFactory()
         {
         }
-
         public Vehicle CreateVehicle(eVehicleTypes i_VehicleType)
         {
             Vehicle newVehicle = null;

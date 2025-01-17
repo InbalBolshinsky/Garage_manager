@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
     internal class ElectricCar : ElectricVehicle
     {
@@ -13,7 +7,6 @@ namespace Ex03.GarageLogic
 
         public ElectricCar() : base(5, 34, 5.4f)
         {
-
         }
 
         public eCarColors CarColor
