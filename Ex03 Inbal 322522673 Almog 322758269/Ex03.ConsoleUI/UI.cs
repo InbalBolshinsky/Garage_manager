@@ -94,9 +94,148 @@ namespace Ex03.ConsoleUI
             return i_Input;
         }
 
+        private void getVehicleType(ref Vehicle io_Vehicle)
+        {
+            string vehicleType;
+            Console.WriteLine("Please enter vehicle type:");
+            printEnumValues(typeof(GarageLogic.eVehicleTypes));
+
+            while (true)
+            {
+                try
+                {
+                    vehicleType = Console.ReadLine();
+                    int parsedVehicleType = int.Parse(vehicleType);
+
+                    int validatedVehicleTypeValue = validateEnumInput(typeof(GarageLogic.eVehicleTypes), parsedVehicleType);
+
+                    io_Vehicle = factory.CreateVehicle((GarageLogic.eVehicleTypes)validatedVehicleTypeValue);
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid numeric value. Please try again.");
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        private void setEnumProperty(PropertyInfo i_PropertyInfo, ref Vehicle io_Vehicle)
+        {
+            Console.WriteLine($"Please enter {fixPropertyName(i_PropertyInfo.Name)}:");
+            printEnumValues(i_PropertyInfo.PropertyType);
+
+            while (true)
+            {
+                try
+                {
+                    string enumUserInput = Console.ReadLine();
+                    int parsedEnumUserInput = int.Parse(enumUserInput);
+
+                    int validatedPropertyInputValue = validateEnumInput(i_PropertyInfo.PropertyType, parsedEnumUserInput);
+
+                    i_PropertyInfo.SetValue(io_Vehicle, Enum.ToObject(i_PropertyInfo.PropertyType, validatedPropertyInputValue), null);
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid numeric value. Please try again.");
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        private void setBooleanProperty(PropertyInfo i_PropertyInfo, ref Vehicle io_Vehicle)
+        {
+            Console.WriteLine($"Please enter if {fixPropertyName(i_PropertyInfo.Name)} (for yes enter '1', for no enter '0'):");
+
+            while (true)
+            {
+                try
+                {
+                    string boolUserInput = Console.ReadLine();
+                    if (boolUserInput != "0" && boolUserInput != "1")
+                    {
+                        throw new GarageLogic.ValueOutOfRangeException(0, 1);
+                    }
+
+                    i_PropertyInfo.SetValue(io_Vehicle, boolUserInput == "1", null);
+                    break;
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        private void setOtherProperty(PropertyInfo i_PropertyInfo, ref Vehicle io_Vehicle)
+        {
+            Console.WriteLine($"Please enter {fixPropertyName(i_PropertyInfo.Name)}:");
+            bool userPropertyInputIsValid = false;
+            while (!userPropertyInputIsValid)
+            {
+                string UserPropertyInput = Console.ReadLine();
+                try
+                {
+                    i_PropertyInfo.SetValue(io_Vehicle, Convert.ChangeType(UserPropertyInput, i_PropertyInfo.PropertyType), null);
+                    object currentValue = i_PropertyInfo.GetValue(io_Vehicle);
+                    if (UserPropertyInput == currentValue.ToString())
+                    {
+                        userPropertyInputIsValid = true;
+                    }
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        private void getOwnersDetails(ref string io_OwnerName, ref string io_OwnerPhone)
+        {
+            Console.WriteLine("Please enter owner's name:");
+            io_OwnerName = Console.ReadLine();
+
+            Console.WriteLine("Please enter owner's phone number:");
+            io_OwnerPhone = Console.ReadLine();
+        }
+
+        private void setWheelsDetails(ref Vehicle io_Vehicle)
+        {
+            Console.WriteLine("Please enter the manufacturer name for all the wheels:");
+            string manufacturerUserInput = Console.ReadLine();
+            io_Vehicle.SetAllWheelsManufacturer(manufacturerUserInput);
+
+            Console.WriteLine("Please enter air pressure for all the wheels:");
+            while (true)
+            {
+                try
+                {
+                    float airPressureUserInput = float.Parse(Console.ReadLine());
+                    io_Vehicle.SetAllWheelsAirPressure(airPressureUserInput);
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number for air pressure.");
+                }
+            }
+        }
+
         private void addVehicle()
         {
-            GarageLogic.Vehicle vehicle;
+            GarageLogic.Vehicle vehicle = null;
             string licenseNumber = getVehicleLicenseNumber();
 
             if (garage.CheckIfInGarage(licenseNumber))
@@ -105,35 +244,8 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine("Vehicle already exists in the garage, changing state to 'In Repair'.");
             }
             else
-            {
-                string ownerName;
-                string ownerPhone;
-                string vehicleType;
-
-                Console.WriteLine("Please enter vehicle type:");
-                printEnumValues(typeof(GarageLogic.eVehicleTypes));
-
-                while (true)
-                {
-                    try
-                    {
-                        vehicleType = Console.ReadLine();
-                        int parsedVehicleType = int.Parse(vehicleType);
-
-                        int validatedVehicleTypeValue = validateEnumInput(typeof(GarageLogic.eVehicleTypes), parsedVehicleType);
-
-                        vehicle = factory.CreateVehicle((GarageLogic.eVehicleTypes)validatedVehicleTypeValue);
-                        break; 
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid numeric value. Please try again.");
-                    }
-                    catch (GarageLogic.ValueOutOfRangeException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
+            {  
+                getVehicleType(ref vehicle);
 
                 Type typeOfVehicle = vehicle.GetType();
                 PropertyInfo[] allProperties = typeOfVehicle.GetProperties();
@@ -148,107 +260,25 @@ namespace Ex03.ConsoleUI
                         }
                         else if (propertyInfo.PropertyType.IsEnum)
                         {
-                            Console.WriteLine($"Please enter {fixPropertyName(propertyInfo.Name)}:");
-                            printEnumValues(propertyInfo.PropertyType);
-
-                            while (true)
-                            {
-                                try
-                                {
-                                    string enumUserInput = Console.ReadLine();
-                                    int parsedEnumUserInput = int.Parse(enumUserInput);
-
-                                    int validatedPropertyInputValue = validateEnumInput(propertyInfo.PropertyType, parsedEnumUserInput);
-
-                                    propertyInfo.SetValue(vehicle, Enum.ToObject(propertyInfo.PropertyType, validatedPropertyInputValue), null);
-                                    break;
-                                }
-                                catch (FormatException)
-                                {
-                                    Console.WriteLine("Invalid input. Please enter a valid numeric value. Please try again.");
-                                }
-                                catch (GarageLogic.ValueOutOfRangeException ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
-                            }
-                        }
+                            setEnumProperty(propertyInfo, ref vehicle);
+                        } 
                         else if (propertyInfo.PropertyType == typeof(bool))
                         {
-                            Console.WriteLine($"Please enter if {fixPropertyName(propertyInfo.Name)} (for yes enter '1', for no enter '0'):");
-
-                            while (true)
-                            {
-                                try
-                                {
-                                    string boolUserInput = Console.ReadLine();
-                                    if (boolUserInput != "0" && boolUserInput != "1")
-                                    {
-                                        throw new GarageLogic.ValueOutOfRangeException(0, 1);
-                                    }
-
-                                    propertyInfo.SetValue(vehicle, boolUserInput == "1", null);
-                                    break;
-                                }
-                                catch (GarageLogic.ValueOutOfRangeException ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
-                            }
+                            setBooleanProperty(propertyInfo, ref vehicle);
                         }
                         else
                         {
-                            Console.WriteLine($"Please enter {fixPropertyName(propertyInfo.Name)}:");
-                            bool userPropertyInputIsValid = false;
-                            while (!userPropertyInputIsValid)
-                            {
-                                string UserPropertyInput = Console.ReadLine();
-                                try
-                                {
-                                    propertyInfo.SetValue(vehicle, Convert.ChangeType(UserPropertyInput, propertyInfo.PropertyType), null);
-                                    object currentValue = propertyInfo.GetValue(vehicle);
-                                    if (UserPropertyInput == currentValue.ToString())
-                                    {
-                                        userPropertyInputIsValid = true;
-                                    }            
-                                }
-                                catch (FormatException ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
-                                catch (GarageLogic.ValueOutOfRangeException ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
-                            }
+                            setOtherProperty(propertyInfo, ref vehicle);
                         }
                     }
                 }
 
-                Console.WriteLine("Please enter the manufacturer name for all the wheels:");
-                string manufacturerUserInput = Console.ReadLine();
-                vehicle.SetAllWheelsManufacturer(manufacturerUserInput);
+                setWheelsDetails(ref vehicle);
 
-                Console.WriteLine("Please enter air pressure for all the wheels:");
-                while (true)
-                {
-                    try
-                    {
-                        float airPressureUserInput = float.Parse(Console.ReadLine());
-                        vehicle.SetAllWheelsAirPressure(airPressureUserInput);
-                        break;
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid number for air pressure.");
-                    }
-                }
-
-                Console.WriteLine("Please enter owner's name:");
-                ownerName = Console.ReadLine();
-
-                Console.WriteLine("Please enter owner's phone number:");
-                ownerPhone = Console.ReadLine();
+                string ownerName = "";
+                string ownerPhone = "";
+               
+                getOwnersDetails(ref ownerName, ref ownerPhone);
 
                 garage.AddToGarage(new GarageLogic.VehicleOwner(ownerName, ownerPhone), vehicle);
                 Console.WriteLine("Vehicle added successfully.");
@@ -283,6 +313,64 @@ namespace Ex03.ConsoleUI
             }
         }
 
+        private void showAllLicenseNumbers()
+        {
+            List<string> licenseNumbers = garage.GetLicenseNumbers();
+            if (licenseNumbers.Count == 0)
+            {
+                Console.WriteLine("There are no vehicles in the garage.");
+            }
+            else
+            {
+                Console.WriteLine("The license numbers are:");
+                foreach (string licenseNumber in licenseNumbers)
+                {
+                    Console.WriteLine(licenseNumber);
+                }
+            }
+        }
+
+        private void showFilteredLicenseNumbers()
+        {
+            Console.WriteLine("Which vehicle state license numbers do you want to display?");
+            printEnumValues(typeof(GarageLogic.eRepairState));
+
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Please enter a value for the repair state:");
+                    string userRepairStateInput = Console.ReadLine();
+                    int parsedEnum = int.Parse(userRepairStateInput);
+                    int validatedValue = validateEnumInput(typeof(GarageLogic.eRepairState), parsedEnum);
+
+                    List<string> licenseNumbers = garage.SortVehiclesByState((GarageLogic.eRepairState)validatedValue);
+
+                    if (licenseNumbers.Count == 0)
+                    {
+                        Console.WriteLine("There are no vehicles in the garage in that state.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("The license numbers are:");
+                        foreach (string licenseNumber in licenseNumbers)
+                        {
+                            Console.WriteLine(licenseNumber);
+                        }
+                    }
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid numeric value.");
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
         private void getLicenseNumbers()
         {
             Console.Write("Do you want to select vehicle state to filter your search by?\nPlease enter '1' if yes, '0' if no: ");
@@ -295,59 +383,11 @@ namespace Ex03.ConsoleUI
 
             if (userAnswer[0] == '0')
             {
-                List<string> licenseNumbers = garage.GetLicenseNumbers();
-                if (licenseNumbers.Count == 0)
-                {
-                    Console.WriteLine("There are no vehicles in the garage.");
-                }
-                else
-                {
-                    Console.WriteLine("The license numbers are:");
-                    foreach (string licenseNumber in licenseNumbers)
-                    {
-                        Console.WriteLine(licenseNumber);
-                    }
-                }
+                showAllLicenseNumbers();
             }
-            else
+            else 
             {
-                Console.WriteLine("Which vehicle state license numbers do you want to display?");
-                printEnumValues(typeof(GarageLogic.eRepairState));
-
-                while (true)
-                {
-                    try
-                    {
-                        Console.WriteLine("Please enter a value for the repair state:");
-                        string userRepairStateInput = Console.ReadLine();
-                        int parsedEnum = int.Parse(userRepairStateInput);
-                        int validatedValue = validateEnumInput(typeof(GarageLogic.eRepairState), parsedEnum);
-
-                        List<string> licenseNumbers = garage.SortVehiclesByState((GarageLogic.eRepairState)validatedValue);
-
-                        if (licenseNumbers.Count == 0)
-                        {
-                            Console.WriteLine("There are no vehicles in the garage in that state.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("The license numbers are:");
-                            foreach (string licenseNumber in licenseNumbers)
-                            {
-                                Console.WriteLine(licenseNumber);
-                            }
-                        }
-                        break;
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid numeric value.");
-                    }
-                    catch (GarageLogic.ValueOutOfRangeException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
+               showFilteredLicenseNumbers();
             }
         }
 
@@ -396,24 +436,8 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("Wheels inflated to maximum.");
         }
 
-        private void refuelVehicle()
+        private int getFuelType()
         {
-            string licenseNumber;
-
-            while (true)
-            {
-                licenseNumber = getVehicleLicenseNumber();
-
-                if (garage.CheckIfInGarage(licenseNumber, false))
-                {
-                    break; 
-                }
-                else
-                {
-                    Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number.");
-                }
-            }
-
             Console.WriteLine("Please enter fuel type:");
             printEnumValues(typeof(GarageLogic.eFuelType));
             string fuelTypeInput;
@@ -437,7 +461,11 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine(ex.Message);
                 }
             }
+            return fuelType;
+        }
 
+        private void setAmountOfLitersToFuel(string i_LicenseNumber, int i_FuelType)
+        {
             Console.WriteLine("Please enter the amount of liters to fuel:");
             string amountOfLitersToAddInput;
             float AmountOfLitersToAdd;
@@ -453,7 +481,7 @@ namespace Ex03.ConsoleUI
                         throw new ArgumentException("Fuel amount must be greater than zero. Please try again.");
                     }
 
-                    garage.RefuelVehicle(licenseNumber, (GarageLogic.eFuelType)fuelType, AmountOfLitersToAdd);
+                    garage.RefuelVehicle(i_LicenseNumber, (GarageLogic.eFuelType)i_FuelType, AmountOfLitersToAdd);
                     Console.WriteLine("Vehicle refueled.");
 
                     break;
@@ -466,7 +494,66 @@ namespace Ex03.ConsoleUI
                 {
                     Console.WriteLine(ex.Message);
                 }
-                catch(GarageLogic.ValueOutOfRangeException ex)
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        private void refuelVehicle()
+        {
+            string licenseNumber;
+
+            while (true)
+            {
+                licenseNumber = getVehicleLicenseNumber();
+
+                if (garage.CheckIfInGarage(licenseNumber, false))
+                {
+                    break; 
+                }
+                else
+                {
+                    Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number.");
+                }
+            }
+
+            int fuelType = getFuelType();
+            setAmountOfLitersToFuel(licenseNumber, fuelType);
+        }
+
+        private void setAmountOfMinutesToCharge(string i_LicenseNumber)
+        {
+            Console.WriteLine("Please enter the amount of minutes to charge:");
+            string amountOfMinutesToChargeInput;
+            float amountOfMinutesToCharge;
+            while (true)
+            {
+                try
+                {
+                    amountOfMinutesToChargeInput = Console.ReadLine();
+                    amountOfMinutesToCharge = float.Parse(amountOfMinutesToChargeInput);
+
+                    if (amountOfMinutesToCharge <= 0)
+                    {
+                        throw new ArgumentException("Fuel amount must be greater than zero. Please try again.");
+                    }
+
+                    garage.ChargeVehicle(i_LicenseNumber, amountOfMinutesToCharge);
+                    Console.WriteLine("Vehicle refueled.");
+
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid numeric value.");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -490,41 +577,7 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number.");
                 }
             }
-
-            Console.WriteLine("Please enter the amount of minutes to charge:");
-
-            string amountOfMinutesToChargeInput;
-            float amountOfMinutesToCharge; 
-            while (true)
-            {
-                try
-                {
-                    amountOfMinutesToChargeInput = Console.ReadLine();
-                    amountOfMinutesToCharge = float.Parse(amountOfMinutesToChargeInput);
-
-                    if (amountOfMinutesToCharge <= 0)
-                    {
-                        throw new ArgumentException("Fuel amount must be greater than zero. Please try again.");
-                    }
-
-                    garage.ChargeVehicle(licenseNumber, amountOfMinutesToCharge);
-                    Console.WriteLine("Vehicle refueled.");
-
-                    break;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid numeric value.");
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (GarageLogic.ValueOutOfRangeException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            setAmountOfMinutesToCharge(licenseNumber);
         }
 
         private void printVehicleData()
