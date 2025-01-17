@@ -76,6 +76,22 @@ namespace Ex03.ConsoleUI
             return licenseNumber;
         }
 
+        private string getValidLicenseNumber()
+        {
+            while (true)
+            {
+                string licenseNumber = getVehicleLicenseNumber();
+                if (m_Garage.CheckIfInGarage(licenseNumber, false))
+                {
+                    return licenseNumber;
+                }
+                else
+                {
+                    Console.WriteLine("This license number is not in the garage. Please enter a different one.");
+                }
+            }
+        }
+
         private static int validateEnumInput(Type i_EnumType, int i_Input)
         {
             if (!Enum.IsDefined(i_EnumType, i_Input))
@@ -183,21 +199,23 @@ namespace Ex03.ConsoleUI
                             bool userPropertyInputIsValid = false;
                             while (!userPropertyInputIsValid)
                             {
-                                int parsedValue = 0;
                                 string userPropertyInput = Console.ReadLine();
                                 if (propertyInfo.PropertyType == typeof(int))
                                 {
-                                    if (!int.TryParse(userPropertyInput, out parsedValue))
+                                    if (!int.TryParse(userPropertyInput, out int parsedValue))
                                     {
-                                        Console.WriteLine($"Input is not a valid number. Valid range is {int.MinValue} to {int.MaxValue}.");
+                                        Console.WriteLine($"Input is not a valid number. Valid range is {int.MinValue} to {int.MaxValue}." + Environment.NewLine + "Please enter another number.");
                                         continue;
                                       
                                     }
                                 }
-                                if (parsedValue < float.MinValue || parsedValue > float.MaxValue)
+                                else if (propertyInfo.PropertyType == typeof(float))
                                 {
-                                    Console.WriteLine($"Input is out of range. Valid range is {float.MinValue} to {float.MaxValue}.");
-                                    continue;
+                                    if (!float.TryParse(userPropertyInput, out float floatParsedValue))
+                                    {
+                                        Console.WriteLine($"Input is not a valid number. Valid range is {float.MinValue} to {float.MaxValue}." + Environment.NewLine + "Please enter another number.");
+                                        continue;
+                                    }
                                 }
                                 try
                                 {
@@ -341,7 +359,7 @@ namespace Ex03.ConsoleUI
 
         private void changeVehicleState()
         {
-            string licenseNumber = getVehicleLicenseNumber();
+            string licenseNumber = getValidLicenseNumber();
             Console.WriteLine("Please enter the new vehicle state:");
             printEnumValues(typeof(GarageLogic.eRepairState));
             if (m_Garage.CheckIfInGarage(licenseNumber, false))
@@ -371,80 +389,85 @@ namespace Ex03.ConsoleUI
 
         private void pumpAllWheelsToMax()
         {
-            string licenseNumber = getVehicleLicenseNumber();
-            while (!m_Garage.CheckIfInGarage(licenseNumber, false))
-            {
-                Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number");
-                licenseNumber = getVehicleLicenseNumber();
-            }
+            string licenseNumber = getValidLicenseNumber();
             m_Garage.PumpWheelsToMax(licenseNumber);
             Console.WriteLine("Wheels inflated to maximum.");
         }
 
         private void refuelVehicle()
         {
-            string licenseNumber;
+            string licenseNumber = getValidLicenseNumber();
             while (true)
             {
-                licenseNumber = getVehicleLicenseNumber();
-                if (m_Garage.CheckIfInGarage(licenseNumber, false))
+                int fuelType = getValidFuelType();
+                float amountOfLiters = getValidFuelAmount();
+                try
                 {
-                    break; 
+                    m_Garage.RefuelVehicle(licenseNumber, (GarageLogic.eFuelType)fuelType, amountOfLiters);
+                    Console.WriteLine("Vehicle refueled successfully!");
+                    break;
                 }
-                else
+                catch (ArgumentException ex)
                 {
-                    Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number.");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Please enter a different fuel type.");
+                }
+                catch (GarageLogic.ValueOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Please enter a different amount of liters.");
                 }
             }
-            Console.WriteLine("Please enter fuel type:");
-            printEnumValues(typeof(GarageLogic.eFuelType));
-            string fuelTypeInput;
-            int fuelType;
+        }
+
+        private int getValidFuelType()
+        {
             while (true)
             {
                 try
                 {
-                    fuelTypeInput = Console.ReadLine();
-                    fuelType = int.Parse(fuelTypeInput);
-
+                    Console.WriteLine("Please select fuel type (numeric value):");
+                    printEnumValues(typeof(GarageLogic.eFuelType));
+                    string input = Console.ReadLine();
+                    int fuelType = int.Parse(input);
                     validateEnumInput(typeof(GarageLogic.eFuelType), fuelType);
-                    break;
+                    return fuelType;
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid numeric value.");
+                    Console.WriteLine("Invalid input. Please enter a numeric value for the fuel type.");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
                 catch (GarageLogic.ValueOutOfRangeException ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
-            Console.WriteLine("Please enter the amount of liters to fuel:");
-            string amountOfLitersToAddInput;
-            float amountOfLitersToAdd;
+        }
+
+        private float getValidFuelAmount()
+        {
             while (true)
             {
                 try
                 {
-                    amountOfLitersToAddInput = Console.ReadLine();
-                    amountOfLitersToAdd = float.Parse(amountOfLitersToAddInput);
-                    if (amountOfLitersToAdd <= 0)
+                    Console.WriteLine("Please enter the amount of liters to fuel:");
+                    string input = Console.ReadLine();
+                    float amount = float.Parse(input);
+                    if (amount <= 0)
                     {
                         throw new ArgumentException("Fuel amount must be greater than zero. Please try again.");
                     }
-                    m_Garage.RefuelVehicle(licenseNumber, (GarageLogic.eFuelType)fuelType, amountOfLitersToAdd);
-                    Console.WriteLine("Vehicle refueled.");
-                    break;
+                    return amount;
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid numeric value.");
+                    Console.WriteLine("Invalid input. Please enter a numeric value for the amount.");
                 }
                 catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch(GarageLogic.ValueOutOfRangeException ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -453,19 +476,7 @@ namespace Ex03.ConsoleUI
 
         private void chargeVehicle()
         {
-            string licenseNumber;
-            while (true)
-            {
-                licenseNumber = getVehicleLicenseNumber();
-                if (m_Garage.CheckIfInGarage(licenseNumber, false))
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("There is no vehicle with this license number in the garage. Please enter a different license number.");
-                }
-            }
+            string licenseNumber = getValidLicenseNumber();
             Console.WriteLine("Please enter the amount of minutes to charge:");
             string amountOfMinutesToChargeInput;
             float amountOfMinutesToCharge; 
@@ -480,7 +491,7 @@ namespace Ex03.ConsoleUI
                         throw new ArgumentException("Fuel amount must be greater than zero. Please try again.");
                     }
                     m_Garage.ChargeVehicle(licenseNumber, amountOfMinutesToCharge);
-                    Console.WriteLine("Vehicle refueled.");
+                    Console.WriteLine("Vehicle recharged.");
                     break;
                 }
                 catch (FormatException)
@@ -500,7 +511,7 @@ namespace Ex03.ConsoleUI
 
         private void printVehicleData()
         {
-            string licenseNumber = getVehicleLicenseNumber();
+            string licenseNumber = getValidLicenseNumber();
             int wheelIndex = 1;
             KeyValuePair<GarageLogic.VehicleOwner, GarageLogic.Vehicle> vehicleData = m_Garage.GetVehicleDetailsByLicenseNumber(licenseNumber);
             if (m_Garage.CheckIfInGarage(licenseNumber, false))

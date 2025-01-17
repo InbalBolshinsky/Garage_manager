@@ -7,7 +7,6 @@
         private float m_RemainingEnergy;
         private readonly Wheel[] r_Wheels;
 
-
         public Vehicle(int i_NumberOfWheels, float i_MaxAirPressure)
         {
             r_Wheels = new Wheel[i_NumberOfWheels];
