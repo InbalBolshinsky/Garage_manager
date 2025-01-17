@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-
 namespace Ex03.ConsoleUI
 {
     internal class UI
